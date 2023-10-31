@@ -25,8 +25,12 @@ public class program
         double.TryParse(balanceString, out double doubleBalance);
         initialBalance = doubleBalance;
 
+        // Create an instance of IReportService to be passed in as a dependency to BankAccount.
+        // Note: We are doing this manually because we are not using a dependency injection (DI) container.
+        var reportService = new ReportService(); 
+
         // Instantiate the BankAccount class to open an account
-        var account = new BankAccount(firstName, lastName, initialBalance, accountType);
+        var account = new BankAccount(firstName, lastName, initialBalance, accountType, reportService);
 
         // Display current balance
         account.DisplayBalance();

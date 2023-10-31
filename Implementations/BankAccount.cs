@@ -17,6 +17,7 @@ namespace MiniBankApp2.Implementations
         private double _balance;
         private readonly AccountType _accountType;
         private readonly int _accountNumber;
+        private readonly IReportService _reportService;
 
         private List<Transaction> _transactions = new List<Transaction>();
         private List<Beneficiary> _beneficiaries = new List<Beneficiary>();
@@ -31,8 +32,9 @@ namespace MiniBankApp2.Implementations
         public string Bank => _bankName;
 
         // Define a method for opening account. We can use the constructor for this purpose
-        public BankAccount(string firstName, string LastName, double initialBalance, AccountType accountType)
+        public BankAccount(string firstName, string LastName, double initialBalance, AccountType accountType, IReportService reportService)
         {
+            _reportService = reportService;
             _firstName = firstName;
             _lastName = LastName;
             _balance = initialBalance;
@@ -94,21 +96,7 @@ namespace MiniBankApp2.Implementations
         // Define a method for displaying transaction history for thr account in a tabular form
         public void PrintHistory()
         {
-            //Implement the method that will print history, HINT: use a FOR each loop
-            Console.WriteLine("Date \t\t\t\t Transaction Type \t Narration \t\t Amount \t");
-            //sort the transaction in descending order of transaction date so that most recent transaction will appear first.
-            var sortedTransactions = _transactions.OrderByDescending(t => t.TransactionDate);
-            foreach (var transaction in sortedTransactions)
-            {
-                Console.Write(transaction.TransactionDate.ToString("dd/MM/yyyy hh:mm tt"));
-                Console.Write("\t");
-                Console.Write(transaction.TransactionType.ToString());
-                Console.Write("\t\t\t");
-                Console.Write(transaction.Narration);
-                Console.Write("\t\t");
-                Console.Write(transaction.TransactionAmount.ToString("C2").PadLeft(20));
-                Console.WriteLine();
-            }
+            _reportService.PrintAccountHistory(_transactions);
         }
 
         private void TrackTransaction(TransactionType type, double amount, string narration)

@@ -24,6 +24,10 @@ namespace MiniBankApp2.Interfaces
         public void DisplayBalance();
 
         public void PrintHistory();
+
+        public void AddBeneficiary();
+
+        public void ViewBeneficiaries();
     }
 }
 
