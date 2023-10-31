@@ -11,6 +11,7 @@ namespace MiniBankApp2.Implementations
 {
     internal class ReportService : IReportService
     {
+        // TAKE-HOME TASK: Implement this method by adding the necessary logic
         public void PrintAccountBeneficiaries(IList<Beneficiary> beneficiaries)
         {
             throw new NotImplementedException();

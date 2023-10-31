@@ -104,5 +104,16 @@ namespace MiniBankApp2.Implementations
             var newTransaction = new Transaction(DateTime.Now, type, amount, narration);
             _transactions.Add(newTransaction);
         }
+
+        // TAKE-HOME TASK: Implement these two methods by adding the necessary logic
+        public void AddBeneficiary()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ViewBeneficiaries()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
