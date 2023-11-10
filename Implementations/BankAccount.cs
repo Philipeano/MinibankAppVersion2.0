@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MiniBankApp2.Implementations
@@ -18,12 +19,13 @@ namespace MiniBankApp2.Implementations
         private readonly AccountType _accountType;
         private readonly int _accountNumber;
         private readonly IReportService _reportService;
-
+        
         private List<Transaction> _transactions = new List<Transaction>();
+
         private List<Beneficiary> _beneficiaries = new List<Beneficiary>();
 
         private const int _accountNumberSeed = 1000000000;
-        private const string _bankName = "KONYEFA BANK";
+        private const string _bankName = "THE BULB MINI BANK";
 
         // These are properties that make pieces of data/state available to external classes
         public string AccountName => $"{_firstName} {_lastName}".ToUpper();
@@ -43,8 +45,10 @@ namespace MiniBankApp2.Implementations
             TrackTransaction(TransactionType.Deposit, initialBalance, "Initial Deposit");
         }
 
+        [JsonInclude]
         public List<Transaction> Transactions => _transactions;
 
+        [JsonInclude]
         public List<Beneficiary> Beneficiaries => _beneficiaries;
 
         // Define a method for depositing funds
@@ -108,12 +112,36 @@ namespace MiniBankApp2.Implementations
         // TAKE-HOME TASK: Implement these two methods by adding the necessary logic
         public void AddBeneficiary()
         {
-            throw new NotImplementedException();
+            try
+            {
+                Console.WriteLine("Enter the name of your beneficiary's bank: ");
+                string beneficiaryBank = Console.ReadLine();
+
+                Console.WriteLine("Enter your beneficiary's account number: ");
+                int beneficiaryAccountNumber = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("Enter a name or nickname for your beneficiary: ");
+                var beneficiaryNickname = Console.ReadLine();
+
+                // Check if this account number has been added previously
+                if (_beneficiaries.Exists(b => b.AccountNumber == beneficiaryAccountNumber))
+                {
+                    Console.WriteLine("This beneficiary account number already exists.");
+                    return;
+                }
+
+                var newBeneficiary = new Beneficiary(beneficiaryBank, beneficiaryAccountNumber, beneficiaryNickname);
+                _beneficiaries.Add(newBeneficiary);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unable to add the beneficiary. {ex.Message}");                
+            }
         }
 
         public void ViewBeneficiaries()
         {
-            throw new NotImplementedException();
+            _reportService.PrintAccountBeneficiaries(_beneficiaries);
         }
     }
 }

@@ -2,7 +2,8 @@
 {
     public enum AccountType
     {
-        Savings = 1,
+        Unknown = 0,
+        Savings,
         Current,
         Domiciliary,
         Fixed

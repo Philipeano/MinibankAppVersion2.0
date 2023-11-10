@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using Transaction = MiniBankApp2.Models.Transaction; // Apply an Alias for our preffered transaction type to avoid conflict with a built in type of the same name
 
 namespace MiniBankApp2.Implementations
@@ -14,7 +15,16 @@ namespace MiniBankApp2.Implementations
         // TAKE-HOME TASK: Implement this method by adding the necessary logic
         public void PrintAccountBeneficiaries(IList<Beneficiary> beneficiaries)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Beneficiary Name \t\t\t Bank \t\t Account Number \t");
+            foreach (var beneficiary in beneficiaries)
+            {
+                Console.Write(beneficiary.NickName);
+                Console.Write("\t\t\t");
+                Console.Write(beneficiary.BankName);
+                Console.Write("\t\t");
+                Console.Write(beneficiary.AccountNumber.ToString().PadLeft(15));
+                Console.WriteLine();
+            }
         }
 
         public void PrintAccountHistory(IList<Transaction> transactions)
