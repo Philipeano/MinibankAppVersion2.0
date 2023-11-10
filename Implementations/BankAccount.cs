@@ -1,4 +1,5 @@
 ﻿using MiniBankApp2.Enums;
+using MiniBankApp2.Helpers;
 using MiniBankApp2.Interfaces;
 using MiniBankApp2.Models;
 using System;
@@ -18,43 +19,50 @@ namespace MiniBankApp2.Implementations
         private double _balance;
         private readonly AccountType _accountType;
         private readonly int _accountNumber;
-        private readonly IReportService _reportService;
-        
+        private readonly IReportService _reportService;        
         private List<Transaction> _transactions = new List<Transaction>();
-
         private List<Beneficiary> _beneficiaries = new List<Beneficiary>();
 
-        private const int _accountNumberSeed = 1000000000;
         private const string _bankName = "THE BULB MINI BANK";
 
         // These are properties that make pieces of data/state available to external classes
         public string AccountName => $"{_firstName} {_lastName}".ToUpper();
         public int AccountNumber => _accountNumber;
-        public string AccountType => _accountType.ToString().ToUpper();
+        public AccountType AccountType => _accountType;
         public string Bank => _bankName;
+        public double AccountBalance => _balance;
 
         // Define a method for opening account. We can use the constructor for this purpose
-        public BankAccount(string firstName, string LastName, double initialBalance, AccountType accountType, IReportService reportService)
+        public BankAccount(string firstName, string lastName, double initialBalance, AccountType accountType, IReportService reportService)
         {
             _reportService = reportService;
             _firstName = firstName;
-            _lastName = LastName;
+            _lastName = lastName;
             _balance = initialBalance;
             _accountType = accountType;
-            _accountNumber = _accountNumberSeed + 1;
+            _accountNumber = AccountHelper.GenerateAccountNumber();
             TrackTransaction(TransactionType.Deposit, initialBalance, "Initial Deposit");
         }
 
-        [JsonInclude]
+        public BankAccount(Account existingAccount, IReportService reportService)
+        {
+            _reportService = reportService;
+            _firstName = existingAccount.FirstName;
+            _lastName = existingAccount.LastName;
+            _balance = existingAccount.CurrentBalance;
+            _accountType = existingAccount.AccountType;
+            _accountNumber = existingAccount.AccountNumber;
+            _transactions = existingAccount.Transactions;
+            _beneficiaries = existingAccount.Beneficiaries;
+        }
+
         public List<Transaction> Transactions => _transactions;
 
-        [JsonInclude]
         public List<Beneficiary> Beneficiaries => _beneficiaries;
 
         // Define a method for depositing funds
         public void Deposit(double amount)
         {
-
             //validate the amount
             if (amount <= 0)
             {
@@ -69,7 +77,6 @@ namespace MiniBankApp2.Implementations
 
             //Display the new balance
             DisplayBalance();
-
         }
 
         // Define a method for withdrawing funds
@@ -109,7 +116,6 @@ namespace MiniBankApp2.Implementations
             _transactions.Add(newTransaction);
         }
 
-        // TAKE-HOME TASK: Implement these two methods by adding the necessary logic
         public void AddBeneficiary()
         {
             try

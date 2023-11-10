@@ -6,13 +6,12 @@ namespace MiniBankApp2.Interfaces
 {
     internal interface IBankAccount
     {
-
         // Properties expected of all bank accounts
         public string AccountName { get; }
         public int AccountNumber { get; }
-        public string AccountType { get; }
+        public AccountType AccountType { get; }
         public string Bank { get; }
-
+        public double AccountBalance { get; }
         public List<Transaction> Transactions { get; }
         public List<Beneficiary> Beneficiaries { get; }
 

@@ -1,4 +1,5 @@
 ﻿using MiniBankApp2.Enums;
+using MiniBankApp2.Helpers;
 using MiniBankApp2.Implementations;
 using MiniBankApp2.Interfaces;
 using MiniBankApp2.Models;
@@ -13,8 +14,9 @@ public class Program
 
         // Load existing bank accounts
         IPersistenceService dataService = new JsonDataService();
-        List<BankAccount> availableAccounts = dataService.FetchAllAccounts();
-        BankAccount activeBankAccount = new BankAccount(string.Empty, string.Empty, 0, AccountType.Unknown, reportService); 
+        List<Account> availableAccounts = dataService.FetchAllAccounts();
+
+        BankAccount activeBankAccount; 
 
         Console.WriteLine("----------  YOU ARE WELCOME TO THE BULB MINI BANK  -----------");
 
@@ -56,11 +58,12 @@ public class Program
             if (matchingAccount == null)
             {
                 Console.WriteLine("Sorry, this account number does not exist.");
-                // TODO: Ask the user if they would like to search again, create a new account or exit the app                 
+                // TODO: Ask the user if they would like to search again, create a new account or exit the app
+                // After 3 failed attempts, display a warning message and exit the app
                 return;
             }
 
-            activeBankAccount = matchingAccount;
+            activeBankAccount = new BankAccount(matchingAccount, reportService);
         }
 
         // Display current balance
@@ -75,7 +78,7 @@ public class Program
             int userChoice;
             do
             {
-                Console.WriteLine("Welcome! What would you like to do?\n1. Deposit Funds 2. Withdraw cash 3. View Statement  4. Add beneficiary  5. View beneficiaries");
+                Console.WriteLine("Welcome! What would you like to do next?\n1. Deposit Funds 2. Withdraw cash 3. View Statement  4. Add beneficiary  5. View beneficiaries");
                 bool userChoiceValid = int.TryParse(Console.ReadLine(), out userChoice);
                 if (!userChoiceValid)
                 {
@@ -130,15 +133,19 @@ public class Program
         if (userDecision == 2)
         {
             // Ensure the active bank account used for this session is part of the final list of accounts to be persisted.
+
+            // First, create an Account instance from the activeBankAccount object
+            var accountToSave = AccountHelper.MapBankAccountToAccount(activeBankAccount);
+
             var accountToUpdate = availableAccounts.Find(x => x.AccountNumber == activeBankAccount.AccountNumber);
             if (accountToUpdate == null)
-            {
-                availableAccounts.Add(activeBankAccount);
+            {   
+                availableAccounts.Add(accountToSave);
             }
             else
             {
                 availableAccounts.Remove(accountToUpdate);
-                availableAccounts.Add(activeBankAccount);
+                availableAccounts.Add(accountToSave);
             }
 
             // Then, call the data service to save all the accounts
@@ -157,6 +164,16 @@ public class Program
 
     }
 }
+
+
+/*
+    Refactor the account number generation logic to use random number generator
+    Define an Account record type in the Models folder
+    Use this Account record type, not the BankAccount class, for serialization, storage and deserialization of bank accounts
+    Have a second constructor in BankAccount class for instantiating BankAccount from an Account record argument
+    Refactor the Main method to load existing accounts or selected account using the new Account record type
+    When saving the accounts back to file, do a mapping/conversion from BankAccount to Account
+*/
 
 
 
