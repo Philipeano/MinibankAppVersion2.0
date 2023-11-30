@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MiniBankApp2.Implementations
 {
-    internal class BankAccount : IBankAccount
+    public class BankAccount : IBankAccount
     {
         // These are fields that hold pieces of data/state, and are accessible throughout the class but not outside.
         private readonly string _firstName;

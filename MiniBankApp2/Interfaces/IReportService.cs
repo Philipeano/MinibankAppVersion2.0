@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MiniBankApp2.Interfaces
 {
-    internal interface IReportService
+    public interface IReportService
     {
         public void PrintAccountHistory(IList<Transaction> transactions);
 
